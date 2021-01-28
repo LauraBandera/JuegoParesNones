@@ -2,6 +2,8 @@ package daw.ej3;
 
 import java.time.LocalDate;
 import java.util.Scanner;
+
+import daw.ej1.Utilidades;
 import daw.ej2.Jugador;
 
 public class Juego {
@@ -14,7 +16,10 @@ public class Juego {
 		//Número de rondas
 		final int k;
 		
+		Utilidades.leerEnteroRango(5, 10);
+		
 		System.out.println("Introduce el número de partidas a jugar:");
+		//Cómo poner el InputMismatchException????????
 		k = s.nextInt();
 		s.nextLine();
 		
@@ -31,11 +36,8 @@ public class Juego {
 			eleccion = s.nextLine();
 		}while(!(eleccion.equals("Si")||(eleccion.equals("No"))));
 		boolean pares;
-		if(eleccion.equals("Si")) {
-			pares = true;
-		}else {
-			pares = false;
-		}
+		
+		pares = eleccion.equals("Si");
 		
 		//Creamos al jugador
 		Jugador j1 = new Jugador(nombre, apellido, nacimiento, pares);
@@ -123,7 +125,8 @@ public class Juego {
 	}
 	
 	private static int sacarDedosMaquina() {
-		return Jugador.sacarDedos();
+		Jugador maquina = new Jugador();
+		return maquina.sacarDedos();
 	}
 	
 	private static int contarRondasGanadasJugador(char[] array) {

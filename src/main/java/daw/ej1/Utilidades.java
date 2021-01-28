@@ -24,7 +24,7 @@ public class Utilidades {
 				System.out.println("Introduzca un número por pantalla");
 				num = s.nextInt();
 			}catch(InputMismatchException ime) {
-				continue;
+				s.nextLine();
 			}
 		}while(num < min || num > max);
 		
@@ -32,6 +32,10 @@ public class Utilidades {
 	}
 	
 	public static int calcularYear(LocalDate fecha) {
-		return(int) ChronoUnit.YEARS.between(fecha, LocalDate.now());
+		//CORRECCIÓN. Para que compruebe que la fecha es anterior al día actual
+		if(fecha.isBefore(LocalDate.now())){
+			return(int) ChronoUnit.YEARS.between(fecha, LocalDate.now());
+		}
+		return -1;
 	}
 }

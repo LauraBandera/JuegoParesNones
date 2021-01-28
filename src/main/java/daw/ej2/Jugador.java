@@ -1,6 +1,8 @@
 package daw.ej2;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import daw.ej1.Utilidades;
@@ -10,7 +12,7 @@ public class Jugador {
 	private String nombre, apellido;
 	private LocalDate nacimiento;
 	private boolean pares; // En caso de ser nones este valor será false
-	private int contadorJugadores = 0;
+	private static int contadorJugadores = 0;
 
 	// Constructor por defecto
 	public Jugador() {
@@ -18,29 +20,38 @@ public class Jugador {
 		apellido = "Gonzalez";
 		nacimiento = LocalDate.of(1957, 10, 2);
 		pares = true;
-		this.contadorJugadores++;
+		Jugador.contadorJugadores++;
 	}
 
 	// Constructor parametrizado
 	public Jugador(String nombre, String apellido, LocalDate nacimiento, boolean pares) {
-		if ((ChronoUnit.YEARS.between(nacimiento, LocalDate.now()) < 18)
-				|| (ChronoUnit.YEARS.between(nacimiento, LocalDate.now()) < 0)) {
-			nombre = "Pepe";
-			apellido = "Gonzalez";
-			nacimiento = LocalDate.of(1957, 10, 2);
-			pares = true;
-			this.contadorJugadores++;
-		} else {
+		//Otra opción
+		this();//this(parametro); //Para llamar a constructores con parámetros
+		if(Utilidades.calcularYear(nacimiento) >= 18){
 			this.nombre = nombre;
 			this.apellido = apellido;
 			this.nacimiento = nacimiento;
 			this.pares = pares;
-			this.contadorJugadores++;
+			Jugador.contadorJugadores++;
 		}
+//		//Mejor opción anterior
+//		if ((ChronoUnit.YEARS.between(nacimiento, LocalDate.now()) < 18)) { //Utilidades.calcularYear(nacimiento) < 18
+//			this.nombre = "Pepe";
+//			this.apellido = "Gonzalez";
+//			this.nacimiento = LocalDate.of(1957, 10, 2);
+//			this.pares = true;
+//			Jugador.contadorJugadores++;
+//		} else {
+//			this.nombre = nombre;
+//			this.apellido = apellido;
+//			this.nacimiento = nacimiento;
+//			this.pares = pares;
+//			Jugador.contadorJugadores++;
+//		}
 	}
 
 	// Metodo para consultar jugadores creados
-	public int consultarJ() {
+	public static int consultarJ() {
 		return contadorJugadores;
 	}
 
@@ -50,9 +61,10 @@ public class Jugador {
 		this.apellido = j.apellido;
 		this.nacimiento = j.nacimiento;
 		this.pares = j.pares;
-		this.contadorJugadores++;
+		Jugador.contadorJugadores++;
 	}
 
+	//ERROR EN FECHA --> ya corregido
 	@Override
 	public String toString() {
 		String eleccion;
@@ -61,7 +73,11 @@ public class Jugador {
 		} else {
 			eleccion = "Nones";
 		}
-		return "Nombre: " + nombre + "\tApellido: " + apellido + "\nFecha: " + nacimiento + "\t Elección" + eleccion;
+		
+		//Faltaba darle formato a la fecha
+		DateTimeFormatter fecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		return "Nombre: " + nombre + "\tApellido: " + apellido + "\nFecha: " + nacimiento.format(fecha) + "\t Elección" + eleccion;
+//		return "Nombre: " + nombre + "\tApellido: " + apellido + "\nFecha: " + nacimiento + "\t Elección" + eleccion;
 	}
 
 	public String getNombre() {
@@ -85,12 +101,18 @@ public class Jugador {
 	}
 
 	public void setNacimiento(LocalDate nacimiento) {
-		if ((ChronoUnit.YEARS.between(nacimiento, LocalDate.now()) < 18)
-				|| (ChronoUnit.YEARS.between(nacimiento, LocalDate.now()) < 0)) {
-
+		if(Utilidades.calcularYear(nacimiento) < 18) {
+			this.nacimiento = LocalDate.of(1957, 10, 2);
 		} else {
 			this.nacimiento = nacimiento;
 		}
+		/*//Mejor la forma de arriba
+		if ((ChronoUnit.YEARS.between(nacimiento, LocalDate.now()) < 18)) {
+			this.nacimiento = LocalDate.of(1957, 10, 2);
+		} else {
+			this.nacimiento = nacimiento;
+		}
+		*/
 	}
 
 	public boolean isPares() {
@@ -105,7 +127,7 @@ public class Jugador {
 		return Utilidades.calcularYear(this.nacimiento);
 	}
 
-	public static int sacarDedos() {
+	public int sacarDedos() {
 		return Utilidades.intAleatorio(0, 10);
 	}
 
